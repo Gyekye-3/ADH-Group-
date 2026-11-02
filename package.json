@@ -1,1 +1,14 @@
+{
+  "name": "gshare-dispatch-engine",
+  "version": "1.0.0",
+  "description": "Automated data bundle dispatch engine with GShare webhook integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.5"
+  }
+}
 
