@@ -20,10 +20,9 @@ const HOUSE_COSTS = {
     '4GB': 15.00
 };
 
-// 1. Manager Key Generation Endpoint (Generates new GShare GSK Keys & Signing Secrets)
-app.post('/api/admin/generate-client-key', async (req, res) => {
+// 1. Mobile-Friendly Key Generation Endpoint (Works with GET & POST)
+app.all('/api/admin/generate-client-key', async (req, res) => {
     try {
-        const { client_name } = req.body;
         const apiKey = 'gsk_' + crypto.randomBytes(16).toString('hex');
         const signingSecret = crypto.randomBytes(32).toString('hex');
 
@@ -40,12 +39,12 @@ app.post('/api/admin/generate-client-key', async (req, res) => {
 
         await pool.query(
             `INSERT INTO gshare_clients (client_name, api_key, signing_secret) VALUES ($1, $2, $3)`,
-            [client_name || 'ADH Group Main', apiKey, signingSecret]
+            ['ADH Group Mobile Admin', apiKey, signingSecret]
         );
 
         return res.status(200).json({
             status: 'success',
-            client_name: client_name || 'ADH Group Main',
+            client_name: 'ADH Group Mobile Admin',
             api_key: apiKey,
             signing_secret: signingSecret
         });
@@ -85,7 +84,7 @@ app.post('/api/processors/gshare/webhook', async (req, res) => {
     }
 });
 
-// 3. Fetch Orders & Profit Margins
+// 3. Fetch Orders Live from Database
 app.get('/api/orders', async (req, res) => {
     try {
         const { rows } = await pool.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 50');
@@ -102,6 +101,3 @@ app.get(['/', '/admin'], (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`ADH Group Platform Server running on port ${PORT}`));
-
-
-
