@@ -3,50 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADH Group - Processors & Profit Monitor</title>
+    <title>Data Orders - ADH Group</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #f4f5f7; color: #1e293b; display: flex; height: 100vh; overflow: hidden; }
+        body { background-color: #f3f4f6; color: #111827; display: flex; height: 100vh; overflow: hidden; }
 
-        /* Left Navigation Bar */
-        .sidebar { width: 240px; background: #0f172a; color: #94a3b8; display: flex; flex-direction: column; padding: 20px 0; }
-        .sidebar-brand { font-size: 18px; font-weight: 800; color: #ffffff; padding: 0 20px 20px; border-bottom: 1px solid #1e293b; letter-spacing: 0.5px; }
-        .nav-section { margin-top: 15px; }
-        .nav-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; padding: 0 20px 8px; }
-        .nav-item { padding: 12px 20px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
-        .nav-item.active { background: #1e293b; color: #38bdf8; border-left: 4px solid #38bdf8; }
+        /* Sidebar Nav */
+        .sidebar { width: 220px; background: #0f172a; color: #94a3b8; display: flex; flex-direction: column; padding: 16px 0; overflow-y: auto; font-size: 13px; }
+        .sidebar-brand { font-size: 15px; font-weight: 700; color: #ffffff; padding: 0 16px 16px; border-bottom: 1px solid #1e293b; }
+        .nav-section { margin-top: 12px; }
+        .nav-item { padding: 8px 16px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px; color: #cbd5e1; }
+        .nav-item:hover { background: #1e293b; color: #ffffff; }
+        .nav-item.active { background: #1e293b; color: #38bdf8; border-left: 3px solid #38bdf8; }
 
-        /* Workspace Content */
+        /* Workspace */
         .workspace { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: #f8fafc; }
-        .top-header { background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 16px 28px; display: flex; justify-content: space-between; align-items: center; }
-        .header-title { font-size: 20px; font-weight: 800; color: #0f172a; }
+        .top-header { background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 12px 24px; display: flex; justify-content: flex-end; align-items: center; gap: 16px; font-size: 13px; font-weight: 600; color: #475569; }
+        .top-header span { cursor: pointer; }
+        .top-header span.active-desk { color: #0284c7; border-bottom: 2px solid #0284c7; padding-bottom: 2px; }
 
-        .content { padding: 24px; max-width: 1280px; margin: 0 auto; width: 100%; }
+        .content-area { padding: 24px; max-width: 1300px; margin: 0 auto; width: 100%; }
+        
+        .page-title { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+        .page-desc { font-size: 12px; color: #64748b; margin-bottom: 16px; line-height: 1.4; }
 
-        /* Processor Cards Grid */
-        .processor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .p-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .p-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .p-title { font-weight: 700; font-size: 16px; color: #0f172a; }
-        .badge-live { background: #dcfce7; color: #166534; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; }
-        .p-rates { font-size: 12px; color: #64748b; line-height: 1.5; margin-top: 8px; background: #f1f5f9; padding: 8px 12px; border-radius: 6px; }
+        /* Network Chips */
+        .network-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .net-chip { padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; background: #ffffff; border: 1px solid #cbd5e1; color: #334155; }
+        .net-chip.active-mtn { background: #fef08a; border-color: #ca8a04; color: #713f12; }
 
-        /* Stats & Profit Cards */
-        .metrics-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-        .metric-card { background: #ffffff; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; text-align: center; }
-        .metric-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
-        .metric-val { font-size: 24px; font-weight: 800; margin-top: 4px; }
-        .val-profit { color: #16a34a; }
-        .val-loss { color: #dc2626; }
+        /* Metrics Cards Grid */
+        .metrics-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+        .metric-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; text-align: center; }
+        .metric-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
+        .metric-value { font-size: 24px; font-weight: 800; color: #0f172a; }
+        
+        .metric-pending { border-top: 4px solid #f59e0b; }
+        .metric-processing { border-top: 4px solid #3b82f6; }
+        .metric-processed { border-top: 4px solid #10b981; }
+        .metric-failed { border-top: 4px solid #ef4444; }
+        .metric-cancelled { border-top: 4px solid #64748b; }
 
-        /* Orders Table */
-        .table-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+        /* Controls Toolbar */
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: #ffffff; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .filter-group { display: flex; gap: 8px; align-items: center; }
+        .btn-filter { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f5f9; border: 1px solid #cbd5e1; cursor: pointer; color: #334155; }
+        .btn-filter.active { background: #0f172a; color: #ffffff; border-color: #0f172a; }
+        .btn-action { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ffffff; border: 1px solid #cbd5e1; cursor: pointer; }
+
+        /* Table */
+        .table-container { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-        th { background: #f8fafc; padding: 14px 18px; font-weight: 700; color: #475569; border-bottom: 1px solid #e2e8f0; }
-        td { padding: 14px 18px; border-bottom: 1px solid #f1f5f9; }
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-        .status-fulfilled { background: #dcfce7; color: #15803d; }
-        .status-pending { background: #fef3c7; color: #b45309; }
+        th { background: #f8fafc; padding: 12px 16px; font-weight: 700; color: #475569; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+        
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .badge-fulfilled { background: #dcfce7; color: #166534; }
+        .badge-pending { background: #fef3c7; color: #92400e; }
     </style>
 </head>
 <body>
@@ -54,138 +67,105 @@
     <div class="sidebar">
         <div class="sidebar-brand">⚡ ADH Group</div>
         <div class="nav-section">
-            <div class="nav-title">Management</div>
-            <div class="nav-item active">Processors & Profit</div>
-            <div class="nav-item">Data Bundles</div>
-            <div class="nav-item">Fulfillment</div>
+            <div class="nav-item">Open agent portal</div>
+            <div class="nav-item">Dispatch</div>
+            <div class="nav-item">Fulfilment</div>
+            <div class="nav-item">Processors</div>
+            <div class="nav-item">Notifications</div>
+            <div class="nav-item">Tickets</div>
+            <div class="nav-item">Users</div>
+            <div class="nav-item">Super dealers</div>
+            <div class="nav-item">Vendors</div>
+            <div class="nav-item">Groups</div>
+            <div class="nav-item">Ops</div>
         </div>
     </div>
 
     <div class="workspace">
         <div class="top-header">
-            <div class="header-title">Processors & Profit Live Tracking</div>
+            <span>DESKS</span>
+            <span>Dealer</span>
+            <span>Store</span>
+            <span>Super dealer</span>
+            <span class="active-desk">Platform admin</span>
         </div>
 
-        <div class="content">
+        <div class="content-area">
+            <div class="page-title">Data orders</div>
+            <div class="page-desc">Purchasers, dispatch batches, or single lines for this network (same desk for MTN, Telecel, and AirtelTigo). Bulk status can target This Filter or Ticked Rows; processor moves and commission usage use ticks. Extract copies phones, with or without sizes.</div>
 
-            <!-- Active Processors Overview (Matches ADH Group Screen) -->
-            <div class="processor-grid">
-                <div class="p-card">
-                    <div class="p-header">
-                        <span class="p-title">GShare Processor</span>
-                        <span class="badge-live">● Live</span>
-                    </div>
-                    <div class="p-rates">
-                        <strong>House Costs:</strong><br>
-                        1GB: GH₵ 3.75 | 2GB: GH₵ 7.50<br>
-                        3GB: GH₵ 11.25 | 4GB: GH₵ 15.00
-                    </div>
+            <div class="network-tabs">
+                <div class="net-chip active-mtn">🟡 MTN</div>
+                <div class="net-chip">Telecel</div>
+                <div class="net-chip">AirtelTigo</div>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card metric-pending"><div class="metric-title">PENDING</div><div class="metric-value">317</div></div>
+                <div class="metric-card metric-processing"><div class="metric-title">PROCESSING</div><div class="metric-value">595</div></div>
+                <div class="metric-card metric-processed"><div class="metric-title">PROCESSED</div><div class="metric-value">32,327</div></div>
+                <div class="metric-card metric-failed"><div class="metric-title">FAILED</div><div class="metric-value">4</div></div>
+                <div class="metric-card metric-cancelled"><div class="metric-title">CANCELLED</div><div class="metric-value">0</div></div>
+            </div>
+
+            <div class="toolbar">
+                <div class="filter-group">
+                    <button class="btn-filter active">Purchases</button>
+                    <button class="btn-filter">Dispatch batches</button>
+                    <button class="btn-filter">Singletons</button>
                 </div>
-
-                <div class="p-card">
-                    <div class="p-header">
-                        <span class="p-title">Telecel Processor</span>
-                        <span class="badge-live">● Live</span>
-                    </div>
-                    <div class="p-rates">
-                        <strong>Default Offer:</strong><br>
-                        Telecel WhatsApp Bulk Dispatch
-                    </div>
-                </div>
-
-                <div class="p-card">
-                    <div class="p-header">
-                        <span class="p-title">DataCore</span>
-                        <span class="badge-live">● Live</span>
-                    </div>
-                    <div class="p-rates">
-                        <strong>Default Offer:</strong><br>
-                        MTN Bulk Dispatch Engine
-                    </div>
+                <div class="filter-group">
+                    <button class="btn-action">Show money</button>
+                    <button class="btn-action">Clear filters</button>
+                    <button class="btn-action" onclick="fetchOrders()">🔄 Refresh</button>
                 </div>
             </div>
 
-            <!-- Profit Metrics Summary -->
-            <div class="metrics-bar">
-                <div class="metric-card"><div class="metric-title">Total Orders</div><div class="metric-val" id="total-cnt">0</div></div>
-                <div class="metric-card"><div class="metric-title">Total Sales Revenue</div><div class="metric-val" id="total-revenue">GH₵ 0.00</div></div>
-                <div class="metric-card"><div class="metric-title">Total House Cost</div><div class="metric-val" id="total-cost">GH₵ 0.00</div></div>
-                <div class="metric-card"><div class="metric-title">Net Profit / Loss</div><div class="metric-val val-profit" id="net-profit">GH₵ 0.00</div></div>
-            </div>
-
-            <!-- Live Orders & Margin Breakdown -->
-            <div class="table-card">
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>Order Ref</th>
                             <th>Recipient</th>
                             <th>Network</th>
-                            <th>Size</th>
-                            <th>Customer Price</th>
-                            <th>House Cost</th>
-                            <th>Margin (Profit/Loss)</th>
+                            <th>Bundle Size</th>
+                            <th>Amount (GHS)</th>
                             <th>Processor</th>
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody id="orders-list"></tbody>
+                    <tbody id="orders-tbody"></tbody>
                 </table>
             </div>
-
         </div>
     </div>
 
     <script>
-        async function loadDashboard() {
+        async function fetchOrders() {
             try {
                 const res = await fetch('/api/orders');
                 const orders = await res.json();
+                const tbody = document.getElementById('orders-tbody');
                 
-                let rev = 0, cost = 0, profit = 0;
-                
-                const tbody = document.getElementById('orders-list');
-                tbody.innerHTML = orders.map(o => {
-                    const cPrice = parseFloat(o.amount_charged || 0);
-                    const hCost = parseFloat(o.cost_price || 0);
-                    const margin = cPrice - hCost;
-
-                    rev += cPrice;
-                    cost += hCost;
-                    profit += margin;
-
-                    const marginClass = margin >= 0 ? 'val-profit' : 'val-loss';
-
-                    return `
-                        <tr>
-                            <td><strong>${o.order_ref}</strong></td>
-                            <td>${o.recipient_phone}</td>
-                            <td>${o.network}</td>
-                            <td>${o.bundle_size}</td>
-                            <td>GH₵ ${cPrice.toFixed(2)}</td>
-                            <td>GH₵ ${hCost.toFixed(2)}</td>
-                            <td class="${marginClass}"><strong>${margin >= 0 ? '+' : ''}GH₵ ${margin.toFixed(2)}</strong></td>
-                            <td>${o.processor}</td>
-                            <td><span class="status-badge ${o.status === 'FULFILLED' ? 'status-fulfilled' : 'status-pending'}">${o.status}</span></td>
-                        </tr>
-                    `;
-                }).join('');
-
-                document.getElementById('total-cnt').innerText = orders.length;
-                document.getElementById('total-revenue').innerText = `GH₵ ${rev.toFixed(2)}`;
-                document.getElementById('total-cost').innerText = `GH₵ ${cost.toFixed(2)}`;
-                
-                const netElem = document.getElementById('net-profit');
-                netElem.innerText = `${profit >= 0 ? '+' : ''}GH₵ ${profit.toFixed(2)}`;
-                netElem.className = `metric-val ${profit >= 0 ? 'val-profit' : 'val-loss'}`;
-            } catch(e) {
-                console.error("Error loading dashboard data:", e);
+                tbody.innerHTML = orders.map(o => `
+                    <tr>
+                        <td><strong>${o.order_ref}</strong></td>
+                        <td>${o.recipient_phone}</td>
+                        <td>${o.network}</td>
+                        <td>${o.bundle_size}</td>
+                        <td>GHS ${parseFloat(o.amount_charged).toFixed(2)}</td>
+                        <td>${o.processor}</td>
+                        <td><span class="status-badge ${o.status === 'FULFILLED' ? 'badge-fulfilled' : 'badge-pending'}">${o.status}</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading orders:', err);
             }
         }
-        loadDashboard();
-        setInterval(loadDashboard, 10000); // Auto-refresh every 10s
+        fetchOrders();
     </script>
 </body>
 </html>
+
 
 
