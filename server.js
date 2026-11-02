@@ -20,7 +20,42 @@ const HOUSE_COSTS = {
     '4GB': 15.00
 };
 
-// 1. GShare Inbound Webhook Listener
+// 1. Manager Key Generation Endpoint (Generates new GShare GSK Keys & Signing Secrets)
+app.post('/api/admin/generate-client-key', async (req, res) => {
+    try {
+        const { client_name } = req.body;
+        const apiKey = 'gsk_' + crypto.randomBytes(16).toString('hex');
+        const signingSecret = crypto.randomBytes(32).toString('hex');
+
+        // Ensure table exists
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS gshare_clients (
+                id SERIAL PRIMARY KEY,
+                client_name VARCHAR(100) NOT NULL,
+                api_key VARCHAR(100) UNIQUE NOT NULL,
+                signing_secret VARCHAR(100) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        await pool.query(
+            `INSERT INTO gshare_clients (client_name, api_key, signing_secret) VALUES ($1, $2, $3)`,
+            [client_name || 'ADH Group Main', apiKey, signingSecret]
+        );
+
+        return res.status(200).json({
+            status: 'success',
+            client_name: client_name || 'ADH Group Main',
+            api_key: apiKey,
+            signing_secret: signingSecret
+        });
+    } catch (err) {
+        console.error('[Key Gen Error]', err.message);
+        return res.status(500).json({ error: 'Failed to generate key', details: err.message });
+    }
+});
+
+// 2. GShare Inbound Webhook Listener
 app.post('/api/processors/gshare/webhook', async (req, res) => {
     try {
         const signature = req.headers['x-gshare-signature'];
@@ -50,27 +85,23 @@ app.post('/api/processors/gshare/webhook', async (req, res) => {
     }
 });
 
-// 2. Fetch Orders with Live Profit / Loss Calculations
+// 3. Fetch Orders & Profit Margins
 app.get('/api/orders', async (req, res) => {
     try {
         const { rows } = await pool.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 50');
         res.json(rows);
     } catch (err) {
-        // Live Demo Data aligned with ADH Group pricing structure
-        res.json([
-            { order_ref: 'ORD-1001', recipient_phone: '0241234567', network: 'MTN', bundle_size: '1GB', amount_charged: 6.00, cost_price: HOUSE_COSTS['1GB'], processor: 'GShare', status: 'FULFILLED' },
-            { order_ref: 'ORD-1002', recipient_phone: '0559876543', network: 'MTN', bundle_size: '2GB', amount_charged: 11.00, cost_price: HOUSE_COSTS['2GB'], processor: 'GShare', status: 'FULFILLED' },
-            { order_ref: 'ORD-1003', recipient_phone: '0200001122', network: 'Telecel', bundle_size: '4GB', amount_charged: 20.00, cost_price: HOUSE_COSTS['4GB'], processor: 'Telecel Processor', status: 'PENDING' }
-        ]);
+        res.json([]);
     }
 });
 
-// Serve UI at / and /admin
+// Serve Dashboard UI
 app.get(['/', '/admin'], (req, res) => {
     res.sendFile(__dirname + '/admin.html');
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`ADH Group Processor active on port ${PORT}`));
+app.listen(PORT, () => console.log(`ADH Group Platform Server running on port ${PORT}`));
+
 
 
